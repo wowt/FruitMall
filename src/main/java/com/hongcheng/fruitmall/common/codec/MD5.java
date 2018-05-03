@@ -22,7 +22,7 @@ public class MD5 {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(getMD5("aaaaaaaaaaaaaaaaa+2018-03-21 00:00:00"));
-    }
+//    public static void main(String[] args) {
+//        System.out.println(getMD5("aaaaaaaaaaaaaaaaa+2018-03-21 00:00:00"));
+//    }
 }
