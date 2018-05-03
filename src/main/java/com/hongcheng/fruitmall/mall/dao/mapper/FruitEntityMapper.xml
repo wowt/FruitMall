@@ -3,9 +3,19 @@
 <mapper namespace="com.hongcheng.fruitmall.mall.dao.mapper.FruitEntityMapper">
     <sql id="Base_column_List">
         productId,productName,productPlace,productState,productType,
-        productImg,tips,price,dealPrice,score,startTime,endTime,introduce
+        productImg,tips,price,dealPrice,score,startTime,endTime,introduce,title
     </sql>
-    <select id="selectById" resultType="com.hongcheng.fruitmall.mall.entity.FruitEntity">
+
+    <sql id="filter">
+        <if test="qo.productName != null">
+            AND productName LIKE CONCAT('%',#{qo.productName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="qo.productType != null">
+            AND productType=#{qo.productType,jdbcType=INTEGER}
+        </if>
+    </sql>
+
+    <select id="selectById" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM product
@@ -63,22 +73,72 @@
         </set>
         where productId=#{productId}
     </update>
-    <select id="getDealFruits" resultType="com.hongcheng.fruitmall.mall.entity.FruitEntity">
+    <select id="getDealFruits" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM product
-        WHERE find_in_set('deal',productState)
+        WHERE tips is not null AND find_in_set('publish',productState)
     </select>
-    <select id="getPushFruits" resultType="com.hongcheng.fruitmall.mall.entity.FruitEntity">
+    <select id="getPushFruits" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM product
         WHERE find_in_set('push',productState)
     </select>
-    <select id="getWillSaleFruits" resultType="com.hongcheng.fruitmall.mall.entity.FruitEntity">
+    <select id="getWillSaleFruits" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM product
         WHERE find_in_set('will',productState)
+    </select>
+    <select id="getBatchByIds" resultType="java.util.Map">
+        select productId,productImg,dealPrice,title
+        from product
+        where productId in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item,jdbcType=INTEGER}
+        </foreach>
+    </select>
+    <select id="getListByQO" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
+        select * from product
+        <where>
+            <include refid="filter"/>
+        </where>
+        <choose>
+            <when test="qo.orderBy != null">
+                ORDER BY
+                <foreach collection="qo.orderBy" item="item" separator=",">
+                    ${item.field} ${item.dir}
+                </foreach>
+            </when>
+            <otherwise>
+                ORDER BY  productId desc
+            </otherwise>
+        </choose>
+        <if test="qo.size != 0">
+            LIMIT #{qo.from,jdbcType=INTEGER},#{qo.size,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="countByQO" resultType="java.lang.Integer">
+        select COUNT(`productId`)
+        from product
+        <where>
+            <include refid="filter"/>
+        </where>
+    </select>
+    <select id="getById" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
+        select * from product
+        where productId=#{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="getHots" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
+        select CUNT(orderId) as t,
+        <include refid="Base_column_List"/>
+        from product left join order_product_relation on product.productId=order_product_relation.productId
+        <where>
+            find_in_set('publish',productState)
+        </where>
+        group by product.productId
+        order by t desc limit 10
     </select>
 </mapper>

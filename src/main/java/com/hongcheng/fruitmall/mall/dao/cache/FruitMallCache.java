@@ -1,13 +1,12 @@
 package com.hongcheng.fruitmall.mall.dao.cache;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hongcheng.fruitmall.common.cache.AbstractCache;
-import com.hongcheng.fruitmall.mall.entity.FruitEntity;
+import com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity;
 
 @Component
 public class FruitMallCache extends AbstractCache {

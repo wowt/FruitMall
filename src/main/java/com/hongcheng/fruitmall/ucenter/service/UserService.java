@@ -1,56 +1,73 @@
 package com.hongcheng.fruitmall.ucenter.service;
 
-import org.omg.PortableInterceptor.INACTIVE;
+import com.hongcheng.fruitmall.common.pojo.PageForm;
+import com.hongcheng.fruitmall.common.pojo.PageList;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.CartVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.CollectVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.OrderVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.UserInfoVO;
 
-import com.hongcheng.fruitmall.ucenter.entity.LogInfoEntity;
+import java.util.Map;
 
 public interface UserService {
 
     /**
-     * 验证登录
-     * @param email
-     * @return LoginEntity
+     * 获取用户信息
+     * @return
      */
-    LogInfoEntity getLoginByEmail(String email);
+    UserInfoVO getUserDetail(Integer userId);
 
     /**
-     * 用户注销
-     * @return success
+     * 修改信息
+     * @return
      */
-    void logout(Integer userId);
+    Integer updateUserInfo(Integer userId,UserInfoVO infoVO);
 
     /**
-     * 获取用户信息详情
+     * 查看订单列表
+     * @param userId
+     * @param form
+     * @return
+     */
+    PageList<OrderVO> getOrders(Integer userId, PageForm form);
+
+    /**
+     * 查看购物车列表
+     * @param userId
+     *
+     * @return
+     */
+    PageList<CartVO> getCart(Integer userId);
+
+    /**
+     * 移除购物车
+     * @param userId
+     * @param cartId
+     * @return
+     */
+    Integer removeFromCart(Integer userId,Integer cartId);
+
+    /**
+     * 获取收藏列表
      * @param userId
      * @return
      */
-    String getUserInfo(Integer userId);
+    PageList<CollectVO> getCollectList(Integer userId);
 
     /**
-     * 用户登录
-     * @param email
-     * @param password
+     * 移除收藏
+     * @param userId
+     * @param collectId
      * @return
      */
-    String login(String email, String password);
+    Integer removeFromCollects(Integer userId,Integer collectId);
 
     /**
-     * 注册
-     * @param entity
-     */
-    String register(LogInfoEntity entity);
-
-    /**
-     * 更新登录相关
-     * @param entity
-     */
-    void updateLogin(LogInfoEntity entity);
-
-    /**
-     * 激活注册邮件连接
-     * @param email
-     * @param code
+     * 下订单
+     * @param userId
      * @return
      */
-    Boolean confirm(String email, Integer code);
+    Integer createOrder(Integer userId, Map<Integer,Integer> orderForm);
+
+
 }

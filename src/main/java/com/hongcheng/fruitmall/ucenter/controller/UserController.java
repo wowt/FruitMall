@@ -1,49 +1,63 @@
 package com.hongcheng.fruitmall.ucenter.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.hongcheng.fruitmall.common.codec.MD5;
-import com.hongcheng.fruitmall.common.util.Response;
-import com.hongcheng.fruitmall.ucenter.entity.LogInfoEntity;
+import com.hongcheng.fruitmall.common.constants.RestResponse;
+import com.hongcheng.fruitmall.common.pojo.PageForm;
+import com.hongcheng.fruitmall.common.pojo.PageList;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.CartVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.CollectVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.OrderVO;
+import com.hongcheng.fruitmall.ucenter.pojo.vo.UserInfoVO;
 import com.hongcheng.fruitmall.ucenter.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/userCenter/v1")
+@RequestMapping("/fruitmall/userCenter/v1")
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @PostMapping("/login")
-    public Response<String> login(LogInfoEntity logInfo) {
-        Response<String> response = new Response<>();
-        response.setResponseData(userService.login(logInfo.getEmail(), logInfo.getPassword()));
-        return response;
+    @GetMapping("/userInfo")
+    public RestResponse<UserInfoVO> getUserInfo(@SessionAttribute("userId") Integer userId) {
+       return RestResponse.success(userService.getUserDetail(userId));
     }
 
-    @GetMapping("/logout")
-    public Response<String> logout(Integer id) {
-        userService.logout(id);
-        return new Response<>();
+    @GetMapping("/orders")
+    public RestResponse<PageList<OrderVO>> getOrders(@SessionAttribute("userId") Integer userId, PageForm form) {
+        return RestResponse.success(userService.getOrders(userId,form));
     }
 
-    @PostMapping("/register")
-    public Response<String> register(LogInfoEntity logInfo) {
-        Response<String> response = new Response<>();
-        response.setResponseData(userService.register(logInfo));
-        return response;
+    @GetMapping("/carts")
+    public RestResponse<PageList<CartVO>> getCarts(@SessionAttribute("userId") Integer userId) {
+        return RestResponse.success(userService.getCart(userId));
     }
 
-    @GetMapping("/active")
-    public Response<Boolean> confirm(String email, Integer code) {
-        Response<Boolean> response = new Response<>();
-        response.setResponseData(userService.confirm(email, code));
-        return response;
+    @GetMapping("/collect")
+    public RestResponse<PageList<CollectVO>> getCollect(@SessionAttribute("userId") Integer userId) {
+        return RestResponse.success(userService.getCollectList(userId));
     }
 
+    @PutMapping("/userInfo/{id}")
+    public RestResponse<Integer> updateUserInfo(@SessionAttribute("userId") Integer userId,@RequestBody UserInfoVO vo) {
+        return RestResponse.success(userService.updateUserInfo(userId,vo));
+    }
+
+    @DeleteMapping("/cart/{id}")
+    public RestResponse<Integer> removeFromCart(@SessionAttribute("userId") Integer userId,@PathVariable Integer id) {
+        return RestResponse.success(userService.removeFromCart(userId,id));
+    }
+
+    @DeleteMapping("/collect/{id}")
+    public RestResponse<Integer> removeFromCollect(@SessionAttribute("userId") Integer userId,@PathVariable Integer id) {
+        return RestResponse.success(userService.removeFromCollects(userId,id));
+    }
+
+    @PostMapping("/order")
+    public RestResponse<Integer> createOrder(@SessionAttribute("userId") Integer userId, @RequestBody Map<Integer,Integer> formMap) {
+        return RestResponse.success(userService.createOrder(userId,formMap));
+    }
 
 }

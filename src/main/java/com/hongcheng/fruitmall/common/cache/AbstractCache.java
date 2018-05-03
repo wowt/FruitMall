@@ -30,7 +30,7 @@ public class AbstractCache {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractCache.class);
 
-    public <T> T get(String key, Class<T> classType) {
+    protected  <T> T get(String key, Class<T> classType) {
         String jsonValue = redisReadTemplate.opsForValue().get(key);
         if(StringUtils.isEmpty(jsonValue)){
             return null;
@@ -43,7 +43,7 @@ public class AbstractCache {
         return null;
     }
 
-    public <T> T get(String key, TypeReference<?> toValueTypeRef) {
+    protected  <T> T get(String key, TypeReference<?> toValueTypeRef) {
         String jsonValue = redisReadTemplate.opsForValue().get(key);
         if(StringUtils.isEmpty(jsonValue)){
             return null;
@@ -56,7 +56,7 @@ public class AbstractCache {
         return null;
     }
 
-    public void put(String key, Object o, long timeout) {
+    protected void put(String key, Object o, long timeout) {
         try {
             redisWriteTemplate.opsForValue().set(key, objectMapper.writeValueAsString(o), timeout, TimeUnit.SECONDS);
         } catch (JsonProcessingException e) {
@@ -64,15 +64,15 @@ public class AbstractCache {
         }
     }
 
-    public void delete(String key) {
+    protected void delete(String key) {
         redisWriteTemplate.delete(key);
     }
 
-    public void deleteBatch(List<String> keys) {
+    protected void deleteBatch(List<String> keys) {
         redisWriteTemplate.delete(keys);
     }
 
-    public <T> T hget(String key, String field, Class<T> classType) {
+    protected  <T> T hget(String key, String field, Class<T> classType) {
         Object value = redisReadTemplate.opsForHash().get(key, field);
         if(value != null) {
             try {
@@ -84,28 +84,55 @@ public class AbstractCache {
         return null;
     }
 
-    public void hdel(String key, String filed) {
+    protected void hdel(String key, String filed) {
         redisWriteTemplate.opsForHash().delete(key, filed);
     }
 
-    public void hset(String key, String field, Object o, long timeout) {
+    protected void hset(String key, String field, Object o, long timeout) {
         redisWriteTemplate.opsForHash().put(key, field, o);
         redisWriteTemplate.expire(key, timeout, TimeUnit.SECONDS);
     }
 
-    public boolean exists(String key){
+    /**
+     * redis消息队列
+     * @param key
+     * @param value
+     */
+    protected void pushFromTail(String key,Object value) {
+        String str = null;
+        try {
+            str = objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            log.error("cache push to list failed......",e.getMessage());
+        }
+        redisWriteTemplate.boundListOps(key).rightPush(str);
+    }
+
+    protected  <T> T popFromHead(String key, Class<T> classTyp) {
+        String value = redisReadTemplate.boundListOps(key).leftPop();
+        if(!StringUtils.isEmpty(value)){
+            try {
+                return objectMapper.readValue(value, classTyp);
+            } catch (IOException e) {
+                log.error("pop failed....",e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    protected boolean exists(String key){
         return redisReadTemplate.hasKey(key);
     }
 
-    public void expire(String key, long timeout){
+    protected void expire(String key, long timeout){
         redisWriteTemplate.expire(key, timeout, TimeUnit.SECONDS);
     }
 
-    public void incr(String key){
+    protected void incr(String key){
         redisWriteTemplate.opsForValue().increment(key, 1);
     }
 
-    public void incrBy(String key, long increment){
+    protected void incrBy(String key, long increment){
         redisWriteTemplate.opsForValue().increment(key, increment);
     }
 

@@ -1,6 +1,6 @@
 package com.hongcheng.fruitmall.mall.dao.mapper;
 
-import com.hongcheng.fruitmall.mall.entity.ProductTypeEntity;
+import com.hongcheng.fruitmall.mall.pojo.entity.ProductTypeEntity;
 
 public interface ProductTypeEntityMapper {
 

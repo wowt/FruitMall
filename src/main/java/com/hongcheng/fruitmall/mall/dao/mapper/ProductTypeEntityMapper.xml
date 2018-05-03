@@ -4,7 +4,7 @@
     <sql id="Base_column_List">
         typeId,typeName,typeState
     </sql>
-    <select id="selectById" resultType="com.hongcheng.fruitmall.mall.entity.ProductTypeEntity">
+    <select id="selectById" resultType="com.hongcheng.fruitmall.mall.pojo.entity.ProductTypeEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM productType

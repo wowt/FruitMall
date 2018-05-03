@@ -2,7 +2,10 @@ package com.hongcheng.fruitmall.mall.service;
 
 import java.util.List;
 
-import com.hongcheng.fruitmall.mall.entity.FruitEntity;
+import com.hongcheng.fruitmall.common.pojo.PageList;
+import com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity;
+import com.hongcheng.fruitmall.mall.pojo.entity.HealthTalkEntity;
+import com.hongcheng.fruitmall.mall.request.FruitRequest;
 
 public interface FruitMallService {
 
@@ -10,23 +13,36 @@ public interface FruitMallService {
      * 获取今日促销的水果列表
      * @return
      */
-    List<FruitEntity> getDayDealFruit();
+    PageList<FruitEntity> getDayDealFruit();
 
     /**
      * 店长推荐
      * @return
      */
-    List<FruitEntity> getShopperPush();
+    PageList<FruitEntity> getShopperPush();
 
     /**
      * 本周热卖
      * @return
      */
-    List<FruitEntity> getWeekSaleFruits();
+    PageList<FruitEntity> getWeekSaleFruits();
 
     /**
      * 即将出售
      * @return
      */
-    List<FruitEntity> getWillOnSale();
+    PageList<FruitEntity> getWillOnSale();
+
+    /**
+     * 按条件查询
+     * @return
+     */
+    PageList<FruitEntity> getListByQuery(FruitRequest request);
+
+    /**
+     * 寄语
+     */
+    HealthTalkEntity getOneTalkByRand();
+
+    FruitEntity getById(Integer id);
 }

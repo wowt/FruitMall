@@ -4,7 +4,16 @@
     <sql id="Base_column_List">
         userId,userState,email,realname,imgUrl,level,userSex,score,borth
     </sql>
-    <select id="selectById" resultType="com.hongcheng.fruitmall.ucenter.entity.UserEntity">
+    <update id="update">
+        update user
+        <set>
+            realname=#{entity.realname,jdbcType=VARCHAR},
+            userSex=#{entity.userSex,jdbcType=BIT},
+            borth=#{entity.borth,jdbcType=TIMESTAMP}
+        </set>
+        where userId=#{id,jdbcType=INTEGER}
+    </update>
+    <select id="selectById" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.UserEntity">
         SELECT
         <include refid="Base_column_List"/>
         FROM user

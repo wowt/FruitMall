@@ -24,6 +24,10 @@
         </encoder>
     </appender>
 
+    <logger name="com.hongcheng.fruitmall" additivity="false" level="debug">
+        <appender-ref ref="STDOUT" />
+    </logger>
+
     <root level="INFO">
         <appender-ref ref="FILE" />
         <appender-ref ref="STDOUT" />

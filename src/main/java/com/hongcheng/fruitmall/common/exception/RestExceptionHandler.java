@@ -1,18 +1,18 @@
 package com.hongcheng.fruitmall.common.exception;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.google.common.base.Strings;
+import com.hongcheng.fruitmall.common.constants.RestResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.hongcheng.fruitmall.common.constants.ResponseConstant;
+import javax.servlet.http.HttpServletRequest;
+
+import static com.hongcheng.fruitmall.common.constants.RestResponseCode.CUSTOMER_ERROR;
 
 /**
  * 全局异常处理类
@@ -20,31 +20,20 @@ import com.hongcheng.fruitmall.common.constants.ResponseConstant;
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    public static String ERR_MSG = "服务端发生错误,请联系系统管理员处理!";
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
+    @ResponseBody
+    @ExceptionHandler({BusinessException.class,Exception.class})
+    //@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public RestResponse<Strings> handleBusinessException(HttpServletRequest request, Exception exception) {
 
-    @ExceptionHandler(value = Exception.class)
-    public Object handleExceptionInternal(Exception ex) {
-
-        logger.error("",ex);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(ResponseConstant.TEXT_PLAIN_UTF_8));
-        Map bodyMap = new HashMap();
-        bodyMap.put("error", ex.getMessage());
-        bodyMap.put("msg", ERR_MSG);
-        return new ResponseEntity<Object>(bodyMap, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        logger.error("请求失败:" + request.getRequestURI(), exception);
+        //restful url 请求错误日志记录
+        restfulUrlErrorLog(request, exception);
+        return RestResponse.error(CUSTOMER_ERROR, exception.getMessage());
     }
 
-    @ExceptionHandler(value = BizException.class)
-    public Object handleExceptionInternal(BizException ex) {
-
-        logger.error("",ex);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(ResponseConstant.TEXT_PLAIN_UTF_8));
-        Map bodyMap = new HashMap();
-        bodyMap.put("error", ex.getMessage());
-        bodyMap.put("msg", ex.getMessage());
-        return new ResponseEntity<Object>(ex.getMessage(), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+    private void restfulUrlErrorLog(HttpServletRequest request, Throwable e) {
+            logger.error("RESTful请求失败", e.getMessage());
     }
 }

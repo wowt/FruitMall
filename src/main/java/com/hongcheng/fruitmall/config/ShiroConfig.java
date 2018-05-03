@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.shiro.cache.ehcache.EhCacheManager;
+import org.apache.shiro.session.mgt.DefaultSessionKey;
 import org.apache.shiro.spring.LifecycleBeanPostProcessor;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -17,7 +18,7 @@ import org.springframework.context.annotation.DependsOn;
 /**
  * shiro相关配置
  */
-@Configuration
+//@Configuration
 public class ShiroConfig {
 
     @Bean(name = "lifecycleBeanPostProcessor")

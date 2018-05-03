@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hongcheng.fruitmall.appointment.dao.mapper.AppointmentMapper">
+    <resultMap id="BaseResultMap" type="com.hongcheng.fruitmall.appointment.pojo.vo.AppointmentVO"/>
+
+    <insert id="addSub">
+        insert into will_sale
+        (userId,productId)
+        values
+        (#{userId,jdbcType=INTEGER},#{productId,jdbcType=INTEGER})
+    </insert>
+    <select id="getList" resultType="com.hongcheng.fruitmall.appointment.pojo.vo.AppointmentVO">
+        select * from product
+        where find_in_set('will',productState)
+    </select>
+    <select id="getByProductIdAndUserId"
+            resultType="com.hongcheng.fruitmall.appointment.pojo.entity.WillSaleEntity">
+        select * from will_sale
+        where productId=#{productId,jdbcType=INTEGER} and userId=#{userId,jdbcType=INTEGER}
+    </select>
+
+</mapper>

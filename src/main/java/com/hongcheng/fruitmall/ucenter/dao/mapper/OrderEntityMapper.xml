@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hongcheng.fruitmall.ucenter.dao.mapper.OrderEntityMapper">
+    <resultMap id="BaseResultMap" type="com.hongcheng.fruitmall.ucenter.pojo.entity.OrderEntity">
+        <id column="orderId" property="orderId"/>
+        <result column="userId" property="userId"/>
+    </resultMap>
+
+    <resultMap id="InfoResultMap" type="com.hongcheng.fruitmall.ucenter.pojo.vo.OrderVO" extends="BaseResultMap">
+        <collection property="fruitsInfo" column="orderId" select="getSimpleFruits"/>
+    </resultMap>
+
+    <sql id="Base_column_List">
+        orderId,productId,price,productQuantity,payMoney,payPath,
+        createTime,state,scoreOne,scoreAll,remarks,userId,userAddress
+    </sql>
+
+    <select id="getSimpleFruits" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo" parameterType="INTEGER">
+        select `order_product_relation`.productId,`order_product_relation`.imgUrl as productImg,title,
+        `order_product_relation`.price as dealPrice,quantity
+        from `order_product_relation`
+        left join `product` on `order_product_relation`.productId=`product`.productId
+        where `orderId`=#{orderId}
+    </select>
+
+    <select id="selectByOrderId" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.OrderEntity">
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM `order`
+        <where>
+            orderId=#{orderId}
+        </where>
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO `order`
+        (productId,price,productQuantity,payMoney,payPath,
+        payTime,createTime,state,scoreOne,scoreAll,remarks,userId,userAddress)
+        VALUES
+        (#{productId},#{price},#{productQuantity},#{payMoney},#{payPath},
+        #{createTime},#{state},#{scoreOne},#{scoreAll},#{remarks},#{userId},#{userAddress})
+    </insert>
+    <select id="selectByUserId" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.OrderEntity">
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM `order`
+        <where>
+            userId=#{userId}
+        </where>
+    </select>
+
+    <select id="selectDetailByUserId" resultMap="InfoResultMap">
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM `order`
+        WHERE `userId`=#{userId,jdbcType=INTEGER}
+        <choose>
+            <when test="qo.orderBy != null">
+                ORDER BY
+                <foreach collection="qo.orderBy" item="item" separator=",">
+                    ${item.field} ${item.dir}
+                </foreach>
+            </when>
+            <otherwise>
+                ORDER BY  `orderId` DESC
+            </otherwise>
+        </choose>
+        <if test="qo.size != 0">
+            limit #{qo.from,jdbcType=INTEGER},#{qo.size,jdbcType=INTEGER}
+        </if>
+    </select>
+    <select id="getCountByUserId" resultType="java.lang.Integer">
+        select COUNT(`orderId`)
+        from `order`
+        where userId=#{userId,jdbcType=INTEGER}
+    </select>
+
+
+</mapper>

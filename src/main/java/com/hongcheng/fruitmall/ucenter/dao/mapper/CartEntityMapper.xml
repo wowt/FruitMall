@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hongcheng.fruitmall.ucenter.dao.mapper.CartEntityMapper">
+    <resultMap id="BaseResultMap" type="com.hongcheng.fruitmall.ucenter.pojo.entity.CartEntity">
+        <result column="userId" property="userId"/>
+        <result column="productId" property="productId"/>
+    </resultMap>
+
+    <resultMap id="InfoResultMap" type="com.hongcheng.fruitmall.ucenter.pojo.vo.CartVO" extends="BaseResultMap">
+        <association property="fruitsInfo" column="productId" select="getProduct"/>
+    </resultMap>
+
+    <sql id="Base_column_List">
+        cartId, userId, productId, addTime
+    </sql>
+    <delete id="deleteById">
+        delete from cart
+        where cartId=#{id,jdbcType=INTEGER}
+    </delete>
+    <delete id="deleteByUserId">
+        delete from cart
+        where userId=#{userId,jdbcType=INTEGER}
+    </delete>
+
+    <select id="getById" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.CartEntity">
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM cart
+        where cartId=#{id}
+    </select>
+
+    <select id="getCartInfoByUserId" resultMap="InfoResultMap">
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM cart
+        WHERE `userId`=#{userId,jdbcType=INTEGER}
+    </select>
+
+    <select id="getProduct" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo" parameterType="INTEGER">
+        select productId, productImg, title, dealPrice, quantity
+        from product
+        where productId=#{productId,jdbcType=INTEGER}
+    </select>
+    <select id="getByUserId" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.CartEntity">
+        select * from cart
+        where userId=#{userId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="cartId">
+        INSERT INTO cart
+        (userId,productId,addTime)
+        VALUES
+        (#{userId},#{productId},#{addTime})
+    </insert>
+</mapper>
