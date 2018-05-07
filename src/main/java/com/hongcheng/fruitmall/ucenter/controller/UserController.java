@@ -81,7 +81,7 @@ public class UserController {
         return RestResponse.success(userService.createOrder(userId,formMap));
     }
 
-    @PatchMapping("/order/{id}/sign")
+    @PatchMapping("/order/{orderId}/sign")
     public RestResponse<Integer> signOrder(@SessionAttribute("userId") Integer userId,@PathVariable Integer orderId) {
         return RestResponse.success(userService.signOrder(userId,orderId));
     }

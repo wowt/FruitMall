@@ -16,7 +16,7 @@
     </sql>
     <update id="signOrderById">
         update `order`
-        set state='signed'
+        set state='signed',signTime=#{time}
         where orderId = #{orderId,jdbcType=INTEGER}
     </update>
 

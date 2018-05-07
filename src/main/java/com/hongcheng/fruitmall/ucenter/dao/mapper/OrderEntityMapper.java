@@ -1,5 +1,6 @@
 package com.hongcheng.fruitmall.ucenter.dao.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.hongcheng.fruitmall.common.pojo.PageQuery;
@@ -19,5 +20,5 @@ public interface OrderEntityMapper {
 
     int insert(OrderEntity orderEntity);
 
-    int signOrderById(@Param("orderId") Integer orderId);
+    int signOrderById(@Param("orderId") Integer orderId, @Param("time")LocalDateTime time);
 }

@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer signOrder(Integer userId, Integer orderId) {
         checkUser(userId);
-        return orderMapper.signOrderById(orderId);
+        return orderMapper.signOrderById(orderId,LocalDateTime.now());
     }
 
     @Override
@@ -188,6 +188,7 @@ public class UserServiceImpl implements UserService {
             info.setQuantity(quantity);
             pay += (info.getDealPrice().floatValue()*quantity);
         }
+        order.setUserAddress(address.getUserAddress());
         order.setPayMoney(BigDecimal.valueOf(pay));
         orderMapper.insert(order);
         //放入缓存队列
@@ -198,6 +199,7 @@ public class UserServiceImpl implements UserService {
         userInfo.setName(user.getRealname());
         userInfo.setEmail(user.getEmail());
         userInfo.setUserTelPhone(address.getUserTelPhone());
+        userInfo.setUserAddress(address.getUserAddress());
         vo.setUserInfo(userInfo);
         userCache.pushOrderToQueue(vo);
         return orderProductMapper.insertBatch(simpleFruits.values(),order.getOrderId());
