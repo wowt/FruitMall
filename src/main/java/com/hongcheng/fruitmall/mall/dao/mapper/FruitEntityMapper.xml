@@ -78,7 +78,7 @@
         SELECT
         <include refid="Base_column_List"/>
         FROM product
-        WHERE tips is not null AND find_in_set('publish',productState)
+        WHERE tips !="" AND find_in_set('publish',productState)
     </select>
     <select id="getPushFruits" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
         SELECT
