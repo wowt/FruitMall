@@ -19,4 +19,6 @@ public interface CartEntityMapper {
     int deleteById(@Param("id") Integer cartId);
 
     int deleteByUserId(@Param("userId")Integer userId);
+
+    Integer getCountByUserId(@Param("userId") Integer userId);
 }

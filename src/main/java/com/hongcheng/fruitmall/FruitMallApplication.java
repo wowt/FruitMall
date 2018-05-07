@@ -15,7 +15,6 @@ import java.util.TimeZone;
 public class FruitMallApplication {
 
 	public static void main(String[] args) {
-		TimeZone.setDefault(TimeZone.getTimeZone("CST"));
 		SpringApplication.run(FruitMallApplication.class, args);
 	}
 }

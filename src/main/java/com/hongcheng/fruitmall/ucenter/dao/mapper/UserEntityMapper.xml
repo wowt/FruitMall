@@ -2,13 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hongcheng.fruitmall.ucenter.dao.mapper.UserEntityMapper">
     <sql id="Base_column_List">
-        userId,userState,email,realname,imgUrl,level,userSex,score,borth
+        userId,userState,email,realname,imgUrl,level,userSex,score,borth,nick
     </sql>
     <update id="update">
         update user
         <set>
             realname=#{entity.realname,jdbcType=VARCHAR},
             userSex=#{entity.userSex,jdbcType=BIT},
+            nick=#{entity.nick,jdbcType=VARCHAR},
             borth=#{entity.borth,jdbcType=TIMESTAMP}
         </set>
         where userId=#{id,jdbcType=INTEGER}
@@ -21,9 +22,9 @@
     </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user
-        (userState,email,realname,imgUrl,level,userSex,score,borth)
+        (userState,email,realname,imgUrl,level,userSex,score,borth,nick)
         VALUES
-        (#{userState},#{email},#{realname},#{imgUrl},#{level},#{userSex},#{score},#{borth})
+        (#{userState},#{email},#{realname},#{imgUrl},#{level},#{userSex},#{score},#{borth},#{nick})
     </insert>
 
 </mapper>

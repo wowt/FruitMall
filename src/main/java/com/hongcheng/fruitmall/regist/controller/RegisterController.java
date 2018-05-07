@@ -6,10 +6,7 @@ import com.hongcheng.fruitmall.login.pojo.entity.LoginEntity;
 import com.hongcheng.fruitmall.login.pojo.vo.MailUserInfo;
 import com.hongcheng.fruitmall.regist.service.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/fruitmall/user/v1")
@@ -19,7 +16,7 @@ public class RegisterController {
     private RegisterService service;
 
     @PostMapping("/register")
-    public RestResponse<Boolean> register(LoginEntity logInfo) {
+    public RestResponse<Boolean> register(@RequestBody LoginEntity logInfo) {
         return RestResponse.success(service.register(logInfo));
     }
 

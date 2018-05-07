@@ -61,24 +61,15 @@ public class FruitMallServiceImpl implements FruitMallService {
     }
 
     @Override
-    public PageList<FruitEntity> getWillOnSale() {
-        List<FruitEntity> willSaleFruits = cache.getWillSaleFruitsFromCache();
-        if(CollectionUtils.isEmpty(willSaleFruits)) {
-            willSaleFruits = fruitMapper.getWillSaleFruits();
-            cache.putWillSaleFruitsToCache(willSaleFruits);
-        }
-        return new PageList<>(willSaleFruits.size(),willSaleFruits);
-    }
-
-    @Override
     public PageList<FruitEntity> getListByQuery(FruitRequest request) {
         FruitQO qo = createQo(request);
-        return new PageList<>(fruitMapper.countByQO(qo),fruitMapper.getListByQO(qo));
+        return new PageList<>(fruitMapper.countByQO(qo), fruitMapper.getListByQO(qo));
     }
 
     @Override
-    public HealthTalkEntity getOneTalkByRand() {
-        return talkMapper.selectOne();
+    public PageList<HealthTalkEntity> getTalkByRand() {
+        List<HealthTalkEntity> rand = talkMapper.getRand();
+        return new PageList<>(rand.size(),rand);
     }
 
     @Override

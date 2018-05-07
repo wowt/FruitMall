@@ -2,6 +2,7 @@ package com.hongcheng.fruitmall.appointment.pojo.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
@@ -26,7 +27,7 @@ public class AppointmentVO {
     /**
      * 开始销售时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate startTime;
 
     /**

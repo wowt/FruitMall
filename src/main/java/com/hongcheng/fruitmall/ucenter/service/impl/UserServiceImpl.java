@@ -10,9 +10,7 @@ import com.hongcheng.fruitmall.mall.dao.mapper.FruitEntityMapper;
 import com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo;
 import com.hongcheng.fruitmall.ucenter.dao.cache.UserCache;
 import com.hongcheng.fruitmall.ucenter.dao.mapper.*;
-import com.hongcheng.fruitmall.ucenter.pojo.entity.OrderEntity;
-import com.hongcheng.fruitmall.ucenter.pojo.entity.UserAddressEntity;
-import com.hongcheng.fruitmall.ucenter.pojo.entity.UserEntity;
+import com.hongcheng.fruitmall.ucenter.pojo.entity.*;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.CartVO;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.CollectVO;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.OrderVO;
@@ -27,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,7 +65,14 @@ public class UserServiceImpl implements UserService {
     public Integer updateUserInfo(Integer userId,UserInfoVO infoVO) {
         checkUser(userId);
         userMapper.update(infoVO.getUser(),userId);
-        return addressMapper.update(infoVO.getAddress(),userId);
+        if (Optional.ofNullable(addressMapper.selectByUserId(userId)).isPresent()) {
+            addressMapper.update(infoVO.getAddress(),userId);
+        } else {
+            UserAddressEntity address = infoVO.getAddress();
+            address.setUserId(userId);
+            addressMapper.insert(address);
+        }
+        return userId;
     }
 
     @Override
@@ -111,6 +117,37 @@ public class UserServiceImpl implements UserService {
         cartMapper.deleteByUserId(userId);
         //提交Order
         return subOrder(orderForm, userId);
+    }
+
+    @Override
+    public SimpleUserInfo getSimpleUser(Integer userId) {
+        checkUser(userId);
+        UserEntity userEntity = userMapper.selectById(userId);
+        return BeanMapperFactory.getMapperFacade().map(userEntity, SimpleUserInfo.class);
+    }
+
+    @Override
+    public Integer getCartNum(Integer userId) {
+        checkUser(userId);
+        return cartMapper.getCountByUserId(userId);
+    }
+
+    @Override
+    public Integer signOrder(Integer userId, Integer orderId) {
+        checkUser(userId);
+        return orderMapper.signOrderById(orderId);
+    }
+
+    @Override
+    public Integer addToCart(Integer userId, Integer productId) {
+        checkUser(userId);
+        return cartMapper.insert(new CartEntity(userId, productId));
+    }
+
+    @Override
+    public Integer addToCollect(Integer userId, Integer productId) {
+        checkUser(userId);
+        return collectMapper.insert(new UserCollectEntity(userId,productId));
     }
 
     /**

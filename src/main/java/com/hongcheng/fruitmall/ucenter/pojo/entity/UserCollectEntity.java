@@ -29,4 +29,12 @@ public class UserCollectEntity {
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
+
+    public UserCollectEntity(){}
+
+    public UserCollectEntity(Integer userId,Integer productId) {
+        this.userId = userId;
+        this.productId = productId;
+        this.dateTime = LocalDateTime.now();
+    }
 }

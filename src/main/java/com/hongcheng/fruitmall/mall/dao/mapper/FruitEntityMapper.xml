@@ -2,17 +2,18 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hongcheng.fruitmall.mall.dao.mapper.FruitEntityMapper">
     <sql id="Base_column_List">
-        productId,productName,productPlace,productState,productType,
-        productImg,tips,price,dealPrice,score,startTime,endTime,introduce,title
+        product.productId,productName,productPlace,productState,productType,
+        productImg,tips,product.price,dealPrice,score,startTime,endTime,introduce,title
     </sql>
 
     <sql id="filter">
-        <if test="qo.productName != null">
-            AND productName LIKE CONCAT('%',#{qo.productName,jdbcType=VARCHAR},'%')
+        <if test="qo.name != null">
+            AND productName LIKE CONCAT('%',#{qo.name,jdbcType=VARCHAR},'%')
         </if>
         <if test="qo.productType != null">
             AND productType=#{qo.productType,jdbcType=INTEGER}
         </if>
+        AND find_in_set('publish',productState)
     </sql>
 
     <select id="selectById" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
@@ -85,13 +86,8 @@
         FROM product
         WHERE find_in_set('push',productState)
     </select>
-    <select id="getWillSaleFruits" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
-        SELECT
-        <include refid="Base_column_List"/>
-        FROM product
-        WHERE find_in_set('will',productState)
-    </select>
-    <select id="getBatchByIds" resultType="java.util.Map">
+
+    <select id="getBatchByIds" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo">
         select productId,productImg,dealPrice,title
         from product
         where productId in
@@ -100,7 +96,9 @@
         </foreach>
     </select>
     <select id="getListByQO" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
-        select * from product
+        select
+        <include refid="Base_column_List"/>
+        from product
         <where>
             <include refid="filter"/>
         </where>
@@ -119,9 +117,9 @@
             LIMIT #{qo.from,jdbcType=INTEGER},#{qo.size,jdbcType=INTEGER}
         </if>
     </select>
-    <select id="countByQO" resultType="java.lang.Integer">
-        select COUNT(`productId`)
-        from product
+    <select id="countByQO" resultType="int">
+        SELECT COUNT(productId)
+        FROM product
         <where>
             <include refid="filter"/>
         </where>
@@ -132,7 +130,7 @@
     </select>
 
     <select id="getHots" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity">
-        select CUNT(orderId) as t,
+        select COUNT(orderId) as t,
         <include refid="Base_column_List"/>
         from product left join order_product_relation on product.productId=order_product_relation.productId
         <where>

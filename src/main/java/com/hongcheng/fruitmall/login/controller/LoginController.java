@@ -6,10 +6,7 @@ import com.hongcheng.fruitmall.login.pojo.vo.MailUserInfo;
 import com.hongcheng.fruitmall.login.request.PassEditRequest;
 import com.hongcheng.fruitmall.login.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -30,6 +27,22 @@ public class LoginController {
         return RestResponse.success(service.forgetPass(login));
     }
 
+    /**
+     * 用户中心修改密码
+     * @param userId
+     * @param request
+     * @return
+     */
+    @PostMapping("/login/changePass")
+    public RestResponse<Boolean> changePass(@SessionAttribute("userId")Integer userId, @RequestBody PassEditRequest request) {
+        return RestResponse.success(service.changePass(userId,request));
+    }
+
+    /**
+     * 邮件找回密码
+     * @param request
+     * @return
+     */
     @PostMapping("/login/updatePass")
     public RestResponse<Boolean> updatePass(@RequestBody PassEditRequest request) {
         return RestResponse.success(service.updatePass(request));

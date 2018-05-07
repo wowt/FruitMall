@@ -18,6 +18,19 @@
         WHERE email=#{email} AND state='active'
         LIMIT 1
     </select>
+    <select id="getNActiveByEmail" resultType="com.hongcheng.fruitmall.login.pojo.entity.LoginEntity">
+        select
+        <include refid="Base_column_List"/>
+        FROM login_info
+        WHERE email=#{email} AND state='N-active'
+        LIMIT 1
+    </select>
+    <select id="getByUserId" resultType="com.hongcheng.fruitmall.login.pojo.entity.LoginEntity">
+        select
+        <include refid="Base_column_List"/>
+        from login_info
+        where userId=#{userId,jdbcType=INTEGER} and state='active'
+    </select>
     <update id="update">
         UPDATE login_info
         <set>

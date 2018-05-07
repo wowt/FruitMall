@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -33,13 +34,13 @@ public class LoginService {
      * @return
      */
     public Boolean login(LoginEntity login, HttpSession session) {
-        Subject subject = SecurityUtils.getSubject();
+        //Subject subject = SecurityUtils.getSubject();
         //UsernamePasswordToken token = new UsernamePasswordToken(login.getEmail(), login.getPassword());
         LoginEntity entity = loginMapper.getByEmail(login.getEmail());
 
         boolean verify = Optional.of(entity)
                 .map(LoginEntity::getPassword)
-                .equals(MD5.getMD5(login.getPassword() + entity.getRegistTime()));
+                .equals(Optional.of(createPass(login.getPassword(),entity.getRegistTime().toLocalDate())));
         //存入session
         if (verify) {
             session.setAttribute("userId",entity.getUserId());
@@ -83,9 +84,10 @@ public class LoginService {
         boolean equals = info.getCode().equals(request.getCode());
         if (equals) {
             LoginEntity entity = loginMapper.getByEmail(request.getEmail());
-            String pass = createPass(request.getPassword(), entity.getRegistTime());
+            String pass = createPass(request.getPassword(), entity.getRegistTime().toLocalDate());
             entity.setPassword(pass);
             loginMapper.update(entity);
+            cache.cleanPass(request.getEmail());
             result = true;
         }
         return result;
@@ -97,7 +99,22 @@ public class LoginService {
      * @param registerTime
      * @return
      */
-    private String createPass(String password, LocalDateTime registerTime) {
+    private String createPass(String password, LocalDate registerTime) {
         return MD5.getMD5(password + registerTime.toString());
+    }
+
+    public Boolean changePass(Integer userId,PassEditRequest request) {
+        LoginEntity entity = loginMapper.getByUserId(userId);
+        boolean verify = Optional.of(entity)
+                .map(LoginEntity::getPassword)
+                .equals(Optional.of(createPass(request.getOldPassword(),entity.getRegistTime().toLocalDate())));
+
+        if (verify) {
+            String pass = createPass(request.getPassword(), entity.getRegistTime().toLocalDate());
+            entity.setPassword(pass);
+            loginMapper.update(entity);
+            return true;
+        }
+        return false;
     }
 }

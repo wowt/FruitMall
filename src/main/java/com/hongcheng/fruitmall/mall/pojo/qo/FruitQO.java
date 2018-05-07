@@ -8,5 +8,5 @@ public class FruitQO extends PageQuery {
 
     private Integer productType;
 
-    private String productName;
+    private String name;
 }

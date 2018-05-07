@@ -28,12 +28,6 @@ public interface FruitMallService {
     PageList<FruitEntity> getWeekSaleFruits();
 
     /**
-     * 即将出售
-     * @return
-     */
-    PageList<FruitEntity> getWillOnSale();
-
-    /**
      * 按条件查询
      * @return
      */
@@ -42,7 +36,7 @@ public interface FruitMallService {
     /**
      * 寄语
      */
-    HealthTalkEntity getOneTalkByRand();
+    PageList<HealthTalkEntity> getTalkByRand();
 
     FruitEntity getById(Integer id);
 }

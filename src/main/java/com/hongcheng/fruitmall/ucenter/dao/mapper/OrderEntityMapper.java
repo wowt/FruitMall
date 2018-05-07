@@ -18,4 +18,6 @@ public interface OrderEntityMapper {
     Integer getCountByUserId(@Param("userId") Integer userId);
 
     int insert(OrderEntity orderEntity);
+
+    int signOrderById(@Param("orderId") Integer orderId);
 }

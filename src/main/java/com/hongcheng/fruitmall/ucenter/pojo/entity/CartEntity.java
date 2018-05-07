@@ -32,7 +32,9 @@ public class CartEntity {
     public CartEntity() {
     }
 
-    public CartEntity(Integer userId) {
+    public CartEntity(Integer userId, Integer productId) {
         this.userId = userId;
+        this.productId = productId;
+        this.addTime = LocalDateTime.now();
     }
 }

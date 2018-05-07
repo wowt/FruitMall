@@ -19,7 +19,6 @@ public class FruitMallCache extends AbstractCache {
 
     private static String WEEK_HOT_KEY = "week_hot_key"; //本周热卖
 
-    private static String Will_ON_SALE_KEY = "will_on_sale_key"; //预售
 
     /**
      * 获取今日促销的水果
@@ -57,18 +56,6 @@ public class FruitMallCache extends AbstractCache {
         put(WEEK_HOT_KEY, fruits, TIMEOUT);
     }
 
-    /**
-     * 获取预售水果
-     * @return
-     */
-    public List<FruitEntity> getWillSaleFruitsFromCache(){
-        return get(Will_ON_SALE_KEY, new TypeReference<List<FruitEntity>>() {});
-    }
-
-    public void putWillSaleFruitsToCache(List<FruitEntity> fruits) {
-        put(Will_ON_SALE_KEY, fruits, TIMEOUT);
-    }
-
     public void cleanDayDeal() {
         delete(DAYDEAL_KEY);
     }
@@ -77,7 +64,4 @@ public class FruitMallCache extends AbstractCache {
         delete(WEEK_HOT_KEY);
     }
 
-    public void cleanWillSale() {
-        delete(Will_ON_SALE_KEY);
-    }
 }

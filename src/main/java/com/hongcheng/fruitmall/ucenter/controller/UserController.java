@@ -3,6 +3,7 @@ package com.hongcheng.fruitmall.ucenter.controller;
 import com.hongcheng.fruitmall.common.constants.RestResponse;
 import com.hongcheng.fruitmall.common.pojo.PageForm;
 import com.hongcheng.fruitmall.common.pojo.PageList;
+import com.hongcheng.fruitmall.common.pojo.SimpleUserInfo;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.CartVO;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.CollectVO;
 import com.hongcheng.fruitmall.ucenter.pojo.vo.OrderVO;
@@ -21,8 +22,13 @@ public class UserController {
     UserService userService;
 
     @GetMapping("/userInfo")
-    public RestResponse<UserInfoVO> getUserInfo(@SessionAttribute("userId") Integer userId) {
+    public RestResponse<UserInfoVO> getUserInfo(@SessionAttribute(value = "userId") Integer userId) {
        return RestResponse.success(userService.getUserDetail(userId));
+    }
+
+    @GetMapping("/simpleUser")
+    public RestResponse<SimpleUserInfo> getSimpleUser(@SessionAttribute(value = "userId",required = false) Integer userId) {
+        return RestResponse.success(userService.getSimpleUser(userId));
     }
 
     @GetMapping("/orders")
@@ -35,12 +41,27 @@ public class UserController {
         return RestResponse.success(userService.getCart(userId));
     }
 
+    @PostMapping("/cart")
+    public RestResponse<Integer> addToCart(@SessionAttribute("userId")Integer userId,Integer productId) {
+        return RestResponse.success(userService.addToCart(userId,productId));
+    }
+
+    @GetMapping("/cartNum")
+    public RestResponse<Integer> getCartNum(@SessionAttribute(value = "userId",required = false) Integer userId) {
+        return RestResponse.success(userService.getCartNum(userId));
+    }
+
     @GetMapping("/collect")
     public RestResponse<PageList<CollectVO>> getCollect(@SessionAttribute("userId") Integer userId) {
         return RestResponse.success(userService.getCollectList(userId));
     }
 
-    @PutMapping("/userInfo/{id}")
+    @PostMapping("/collect")
+    public RestResponse<Integer> addToCollect(@SessionAttribute("userId")Integer userId,Integer productId) {
+        return RestResponse.success(userService.addToCollect(userId,productId));
+    }
+
+    @PutMapping("/userInfo")
     public RestResponse<Integer> updateUserInfo(@SessionAttribute("userId") Integer userId,@RequestBody UserInfoVO vo) {
         return RestResponse.success(userService.updateUserInfo(userId,vo));
     }
@@ -58,6 +79,11 @@ public class UserController {
     @PostMapping("/order")
     public RestResponse<Integer> createOrder(@SessionAttribute("userId") Integer userId, @RequestBody Map<Integer,Integer> formMap) {
         return RestResponse.success(userService.createOrder(userId,formMap));
+    }
+
+    @PatchMapping("/order/{id}/sign")
+    public RestResponse<Integer> signOrder(@SessionAttribute("userId") Integer userId,@PathVariable Integer orderId) {
+        return RestResponse.success(userService.signOrder(userId,orderId));
     }
 
 }

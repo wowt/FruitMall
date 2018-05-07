@@ -22,14 +22,12 @@ public interface FruitEntityMapper {
 
     List<FruitEntity> getPushFruits();
 
-    List<FruitEntity> getWillSaleFruits();
-
     @MapKey("productId")
     Map<Integer,SimpleFruitInfo> getBatchByIds(@Param("ids")Collection<Integer> ids);
 
     List<FruitEntity> getListByQO(@Param("qo") FruitQO qo);
 
-    Integer countByQO(@Param("qo") FruitQO qo);
+    int countByQO(@Param("qo") FruitQO qo);
 
     FruitEntity getById(@Param("id") Integer id);
 

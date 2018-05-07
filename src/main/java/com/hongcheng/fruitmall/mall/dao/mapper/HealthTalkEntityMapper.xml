@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.hongcheng.fruitmall.mall.dao.mapper.HealthTalkEntityMapper">
 
-    <select id="selectOne" resultType="com.hongcheng.fruitmall.mall.pojo.entity.HealthTalkEntity">
+    <select id="getRand" resultType="com.hongcheng.fruitmall.mall.pojo.entity.HealthTalkEntity">
         SELECT *
-        FROM `health_talk` AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `table`)-(SELECT MIN(id) FROM `table`))+(SELECT MIN(id) FROM `table`)) AS id) AS t2
+        FROM `health_talk` AS t1 JOIN (SELECT ROUND(RAND() * ((SELECT MAX(id) FROM `health_talk`)-(SELECT MIN(id) FROM `health_talk`))+(SELECT MIN(id) FROM `health_talk`)) AS id) AS t2
         WHERE t1.id >= t2.id
-        ORDER BY t1.id LIMIT 1
+        ORDER BY t1.id LIMIT 2
     </select>
 </mapper>

@@ -36,13 +36,18 @@
         WHERE `userId`=#{userId,jdbcType=INTEGER}
     </select>
 
-    <select id="getProduct" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo" parameterType="INTEGER">
-        select productId, productImg, title, dealPrice, quantity
+    <select id="getProduct" resultType="com.hongcheng.fruitmall.mall.pojo.entity.FruitEntity" parameterType="INTEGER">
+        select *
         from product
-        where productId=#{productId,jdbcType=INTEGER}
+        where productId=#{productId,jdbcType=INTEGER} and find_in_set('publish',productState)
     </select>
     <select id="getByUserId" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.CartEntity">
         select * from cart
+        where userId=#{userId}
+    </select>
+    <select id="getCountByUserId" resultType="java.lang.Integer">
+        select COUNT(`productId`)
+        from cart
         where userId=#{userId}
     </select>
 

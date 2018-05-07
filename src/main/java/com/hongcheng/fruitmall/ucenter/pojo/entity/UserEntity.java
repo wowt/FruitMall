@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hongcheng.fruitmall.ucenter.enums.UserState;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 public class UserEntity {
@@ -53,8 +54,10 @@ public class UserEntity {
     /**
      * 出生日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate borth;
+
+    private String nick;
 
     public UserEntity(){}
 

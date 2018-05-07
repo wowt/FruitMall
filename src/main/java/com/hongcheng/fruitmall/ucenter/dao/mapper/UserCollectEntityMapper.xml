@@ -36,7 +36,7 @@
     </select>
 
     <select id="getProduct" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo" parameterType="integer">
-        select productId, productImg, title, dealPrice, quantity
+        select productId, productImg, title, dealPrice
         from product
         where productId=#{productId,jdbcType=INTEGER}
     </select>
@@ -45,7 +45,7 @@
         INSERT INTO user_collect
         (userId,productId,dateTime)
         VALUES
-        (#{userId},#{productId}#{dateTime})
+        (#{userId},#{productId},#{dateTime})
     </insert>
     <delete id="delete">
         DELETE FROM user_collect

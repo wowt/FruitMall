@@ -11,9 +11,14 @@
     </resultMap>
 
     <sql id="Base_column_List">
-        orderId,productId,price,productQuantity,payMoney,payPath,
-        createTime,state,scoreOne,scoreAll,remarks,userId,userAddress
+        orderId,payMoney,
+        createTime,state,scoreOne,scoreAll,remarks,userId,userAddress,signTime
     </sql>
+    <update id="signOrderById">
+        update `order`
+        set state='signed'
+        where orderId = #{orderId,jdbcType=INTEGER}
+    </update>
 
     <select id="getSimpleFruits" resultType="com.hongcheng.fruitmall.mall.pojo.vo.SimpleFruitInfo" parameterType="INTEGER">
         select `order_product_relation`.productId,`order_product_relation`.imgUrl as productImg,title,
@@ -33,11 +38,9 @@
     </select>
     <insert id="insert" useGeneratedKeys="true" keyProperty="orderId">
         INSERT INTO `order`
-        (productId,price,productQuantity,payMoney,payPath,
-        payTime,createTime,state,scoreOne,scoreAll,remarks,userId,userAddress)
+        (payMoney,createTime,state,remarks,userId,userAddress,signTime)
         VALUES
-        (#{productId},#{price},#{productQuantity},#{payMoney},#{payPath},
-        #{createTime},#{state},#{scoreOne},#{scoreAll},#{remarks},#{userId},#{userAddress})
+        (#{payMoney},#{createTime},#{state},#{remarks},#{userId},#{userAddress},#{signTime})
     </insert>
     <select id="selectByUserId" resultType="com.hongcheng.fruitmall.ucenter.pojo.entity.OrderEntity">
         SELECT

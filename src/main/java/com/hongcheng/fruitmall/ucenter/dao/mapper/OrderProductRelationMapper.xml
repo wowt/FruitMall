@@ -8,7 +8,7 @@
         values
         <foreach collection="list" item="item" separator=",">
             (#{orId,jdbcType=INTEGER},#{item.productId,jdbcType=INTEGER},
-            #{item.productImg,jdbcType=VARCHAR},#{item.price,jdbcType=DECIMAL},
+            #{item.productImg,jdbcType=VARCHAR},#{item.dealPrice,jdbcType=DECIMAL},
             #{item.quantity,jdbcType=INTEGER})
         </foreach>
     </insert>

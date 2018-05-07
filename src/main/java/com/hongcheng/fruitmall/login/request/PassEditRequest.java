@@ -7,6 +7,8 @@ public class PassEditRequest {
 
     private String email;
 
+    private String oldPassword;
+
     private String password;
 
     private Integer code;

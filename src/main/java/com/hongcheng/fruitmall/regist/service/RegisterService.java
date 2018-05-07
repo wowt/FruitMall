@@ -33,11 +33,12 @@ public class RegisterService {
      */
     public Boolean register(LoginEntity entity) {
         entity.setRegistTime(LocalDateTime.now());
+        entity.setState(UserState.NACTIVE.getValue());
         //生成随机验证码并存入缓存
         Integer registerCode = (int)(Math.random()*1000000);
         cache.putRegisterCode(entity.getEmail(), registerCode);
         //密码加密存储
-        entity.setPassword(MD5.getMD5(entity.getPassword()+entity.getRegistTime()));
+        entity.setPassword(MD5.getMD5(entity.getPassword()+entity.getRegistTime().toLocalDate()));
         // 发送激活邮件,加入缓存队列
         loginMapper.insert(entity);
         MailUserInfo mailInfo = new MailUserInfo();
@@ -56,14 +57,17 @@ public class RegisterService {
      */
     public Boolean confirm(String email, Integer code) {
         boolean equals = Optional.of(code)
-                .equals(cache.getRegisterCode(email));
+                .equals(Optional.of(cache.getRegisterCode(email)));
         //验证成功就创建一个用户
         if(equals) {
             //生成user
+            LoginEntity loginEntity = loginMapper.getNActiveByEmail(email);
             UserEntity user = new UserEntity(email);
+            user.setNick(loginEntity.getUserName());
             userMapper.insert(user);
             //更新login
             LoginEntity info = new LoginEntity();
+            info.setId(loginEntity.getId());
             info.setUserId(user.getUserId());
             info.setState(UserState.ACTIVE.getValue());
             loginMapper.update(info);

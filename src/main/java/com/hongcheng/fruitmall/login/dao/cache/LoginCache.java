@@ -26,4 +26,8 @@ public class LoginCache extends AbstractCache {
     public MailUserInfo getInfo(String email) {
         return get(LOGIN_FORGET_PASS_KEY + email, MailUserInfo.class);
     }
+
+    public void cleanPass(String email) {
+        delete(LOGIN_FORGET_PASS_KEY+email);
+    }
 }

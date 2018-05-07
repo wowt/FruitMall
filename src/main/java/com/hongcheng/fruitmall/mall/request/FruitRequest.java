@@ -8,6 +8,6 @@ public class FruitRequest extends PageForm {
 
     private Integer productType;
 
-    private String productName;
+    private String name;
 
 }
